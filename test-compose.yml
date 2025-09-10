@@ -1,0 +1,11 @@
+services:
+  playgroup-one:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports: ["3000:3000"]
+    tmpfs:
+      - /opt/app:rw,noexec,nosuid,nodev,size=256m
+    restart: unless-stopped
+# volumes:  ⟵ remove the ‘data:/config’ mapping for this test
+#   data:
