@@ -13,8 +13,8 @@ services:
       PLAYGROUP_SHA256: ${PLAYGROUP_SHA256:-}
     ports:
       - "${HTTP_PORT:-3000}:3000"
-    tmpfs:
-      - /config:rw,nosuid,nodev,mode=0775,size=512m
-      - /opt/app-cache:rw,nosuid,nodev,mode=0775,size=256m
+    volumes:
+      # if SELinux enforcing, append :Z to each (…:rw,Z)
+      - /docker/playgroup/config:/config:rw
+      - /docker/playgroup/app-cache:/opt/app-cache:rw
     restart: unless-stopped
-# 🚫 remove the 'volumes:' section entirely for this test
