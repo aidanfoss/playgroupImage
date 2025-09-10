@@ -6,12 +6,18 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
       ca-certificates curl xdg-utils procps libfuse2 openjdk-21-jre \
     && rm -rf /var/lib/apt/lists/*
 
+# Runtime launcher (runs in user session)
 COPY start-playgroup.sh /usr/local/bin/start-playgroup
-COPY entrypoint-seed.sh /usr/local/bin/entrypoint-seed
-# ⬇️ use our own defaults dir; /defaults doesn't exist on this base image
+RUN chmod +x /usr/local/bin/start-playgroup
+
+# Ship our desktop file as a default we will copy into /config
 RUN mkdir -p /opt/defaults/autostart
 COPY bootstrap.desktop /opt/defaults/autostart/playgroup-bootstrap.desktop
-RUN chmod +x /usr/local/bin/start-playgroup /usr/local/bin/entrypoint-seed
 
-USER abc
-ENTRYPOINT ["/usr/local/bin/entrypoint-seed"]
+# Root-privileged init hook: seeds /config and fixes ownership
+# NOTE: /custom-cont-init.d scripts run as root before services start
+COPY entrypoint-seed.sh /custom-cont-init.d/10-playgroup-seed
+RUN chmod +x /custom-cont-init.d/10-playgroup-seed
+
+# IMPORTANT: keep the image's default entrypoint (/init) so s6 + PUID/PGID work
+# Do NOT override ENTRYPOINT
