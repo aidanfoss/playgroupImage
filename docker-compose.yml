@@ -1,0 +1,27 @@
+version: "3.9"
+
+services:
+  playgroup-one:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: playgroup-one:local           # Portainer will build this image
+    container_name: playgroup-one
+    environment:
+      TZ: ${TZ:-America/Chicago}
+      PUID: ${PUID:-1000}
+      PGID: ${PGID:-1000}
+      PASSWORD: ${PASSWORD}              # REQUIRED for webtop login
+      PLAYGROUP_URL: ${PLAYGROUP_URL}    # REQUIRED: where to fetch Playgroup
+      PLAYGROUP_SHA256: ${PLAYGROUP_SHA256:-}
+    ports:
+      - "${HTTP_PORT:-3000}:3000"        # noVNC UI
+    # keep the Playgroup binary in RAM and ephemeral
+    tmpfs:
+      - /opt/app:rw,noexec,nosuid,nodev,size=256m
+    volumes:
+      - data:/config                     # persist XFCE/webtop settings
+    restart: unless-stopped
+
+volumes:
+  data:

@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=Playgroup Bootstrap
+Exec=/usr/local/bin/start-playgroup
+OnlyShowIn=XFCE;
+X-GNOME-Autostart-enabled=true
