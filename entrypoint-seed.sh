@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Seed low-lag XFCE defaults on first run, then start webtop
 CFG_DIR="/config/.config/xfce4/xfconf/xfce-perchannel-xml"
 if [ ! -f "${CFG_DIR}/xfwm4.xml" ]; then
   mkdir -p "${CFG_DIR}"
@@ -20,7 +19,7 @@ fi
 
 AS_DIR="/config/.config/autostart"
 mkdir -p "${AS_DIR}"
-cp -f /defaults/autostart/playgroup-bootstrap.desktop "${AS_DIR}/playgroup-bootstrap.desktop" || true
+cp -f /opt/defaults/autostart/playgroup-bootstrap.desktop \
+      "${AS_DIR}/playgroup-bootstrap.desktop" || true
 
-# Start webtop (noVNC + XFCE)
 exec /init
