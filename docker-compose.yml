@@ -2,6 +2,7 @@ services:
   playgroup-one:
     build:
       context: .
+      dockerfile: Dockerfile
     container_name: playgroup-one
     environment:
       TZ: ${TZ:-America/Chicago}
@@ -12,11 +13,8 @@ services:
       PLAYGROUP_SHA256: ${PLAYGROUP_SHA256:-}
     ports:
       - "${HTTP_PORT:-3000}:3000"
-    volumes:
-      - config:/config:rw           # local docker volume (NOT NFS)
-      - appcache:/opt/app-cache:rw
+    tmpfs:
+      - /config:rw,nosuid,nodev,mode=0775,size=512m
+      - /opt/app-cache:rw,nosuid,nodev,mode=0775,size=256m
     restart: unless-stopped
-
-volumes:
-  config:    # <-- local volume managed by Docker
-  appcache:
+# 🚫 remove the 'volumes:' section entirely for this test
