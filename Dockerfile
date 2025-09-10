@@ -1,5 +1,4 @@
 # One-container XFCE desktop (noVNC) that downloads Playgroup on boot
-# NOTE: use the LinuxServer registry at lscr.io
 FROM linuxserver/webtop:ubuntu-xfce
 
 USER root
@@ -9,7 +8,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 COPY start-playgroup.sh /usr/local/bin/start-playgroup
 COPY entrypoint-seed.sh /usr/local/bin/entrypoint-seed
-COPY bootstrap.desktop /defaults/autostart/playgroup-bootstrap.desktop
+# ⬇️ use our own defaults dir; /defaults doesn't exist on this base image
+RUN mkdir -p /opt/defaults/autostart
+COPY bootstrap.desktop /opt/defaults/autostart/playgroup-bootstrap.desktop
 RUN chmod +x /usr/local/bin/start-playgroup /usr/local/bin/entrypoint-seed
 
 USER abc
