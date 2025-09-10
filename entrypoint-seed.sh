@@ -1,10 +1,25 @@
-#!/usr/bin/env bash
+#!/usr/bin/with-contenv bash
 set -euo pipefail
 
-CFG_DIR="/config/.config/xfce4/xfconf/xfce-perchannel-xml"
-if [ ! -f "${CFG_DIR}/xfwm4.xml" ]; then
-  mkdir -p "${CFG_DIR}"
-  cat > "${CFG_DIR}/xfwm4.xml" <<'XML'
+# PUID/PGID are provided by LinuxServer env (defaults 1000/1000 if unset)
+PUID="${PUID:-1000}"
+PGID="${PGID:-1000}"
+
+CFG_ROOT="/config/.config"
+XFCONF_DIR="${CFG_ROOT}/xfce4/xfconf/xfce-perchannel-xml"
+AUTOSTART_DIR="${CFG_ROOT}/autostart"
+
+# Ensure /config exists and is writable, fix ownership
+mkdir -p /config
+chown -R "${PUID}:${PGID}" /config || true
+chmod -R u+rwX,g+rwX /config || true
+
+# Create required dirs
+mkdir -p "${XFCONF_DIR}" "${AUTOSTART_DIR}"
+
+# Seed XFCE low-lag settings if missing
+if [ ! -f "${XFCONF_DIR}/xfwm4.xml" ]; then
+  cat > "${XFCONF_DIR}/xfwm4.xml" <<'XML'
 <?xml version="1.0" encoding="UTF-8"?>
 <channel name="xfwm4" version="1.0">
   <property name="general" type="empty">
@@ -17,9 +32,9 @@ if [ ! -f "${CFG_DIR}/xfwm4.xml" ]; then
 XML
 fi
 
-AS_DIR="/config/.config/autostart"
-mkdir -p "${AS_DIR}"
+# Install our autostart .desktop
 cp -f /opt/defaults/autostart/playgroup-bootstrap.desktop \
-      "${AS_DIR}/playgroup-bootstrap.desktop" || true
+      "${AUTOSTART_DIR}/playgroup-bootstrap.desktop"
 
-exec /init
+# Final ownership to the mapped user
+chown -R "${PUID}:${PGID}" /config
