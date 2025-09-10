@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: playgroup-one:local
+    # image: playgroup-one:local   # ❌ remove this when building in a Stack
     container_name: playgroup-one
     environment:
       TZ: ${TZ:-America/Chicago}
