@@ -2,20 +2,21 @@ services:
   playgroup-one:
     build:
       context: .
-      dockerfile: Dockerfile
     container_name: playgroup-one
     environment:
       TZ: ${TZ:-America/Chicago}
       PUID: ${PUID:-1000}
       PGID: ${PGID:-1000}
-      PASSWORD: ${PASSWORD}               # webtop login password
-      PLAYGROUP_URL: ${PLAYGROUP_URL}     # required
+      PASSWORD: ${PASSWORD}
+      PLAYGROUP_URL: ${PLAYGROUP_URL}
       PLAYGROUP_SHA256: ${PLAYGROUP_SHA256:-}
     ports:
-      - "${HTTP_PORT:-3000}:3000"         # noVNC
+      - "${HTTP_PORT:-3000}:3000"
     volumes:
-      - appcache:/opt/app-cache:rw        # holds the downloaded binary; wiped each boot by init hook
+      - config:/config:rw           # local docker volume (NOT NFS)
+      - appcache:/opt/app-cache:rw
     restart: unless-stopped
 
 volumes:
+  config:    # <-- local volume managed by Docker
   appcache:
