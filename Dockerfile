@@ -1,6 +1,6 @@
 # One-container XFCE desktop (noVNC) that downloads Playgroup on boot
 # NOTE: use the LinuxServer registry at lscr.io
-FROM lscr.io/linuxserver/webtop:xfce
+FROM linuxserver/webtop:ubuntu-xfce
 
 USER root
 RUN apt-get update && apt-get install -y --no-install-recommends \
