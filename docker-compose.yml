@@ -9,8 +9,8 @@ services:
       TZ: ${TZ:-America/Chicago}
       PUID: ${PUID:-1000}
       PGID: ${PGID:-1000}
-      PASSWORD: ${PASSWORD}              # required by linuxserver/webtop
-      PLAYGROUP_URL: ${PLAYGROUP_URL}    # required: your GCS URL
+      PASSWORD: ${PASSWORD}
+      PLAYGROUP_URL: ${PLAYGROUP_URL}
       PLAYGROUP_SHA256: ${PLAYGROUP_SHA256:-}
     ports:
       - "${HTTP_PORT:-3000}:3000"
